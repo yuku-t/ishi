@@ -1,3 +1,6 @@
+require "ishi/error"
+require "ishi/lexer"
+require "ishi/version"
+
 module Ishi
-  autoload :VERSION, "ishi/version"
 end
