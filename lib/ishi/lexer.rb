@@ -1,20 +1,15 @@
 require "strscan"
 require "ishi/error"
+require "ishi/token"
 
 module Ishi
   class Lexer
-    COMMENT = :COMMENT
     NUMBER = :NUMBER
-    STRING = :STRING
-    IDENTIFIER = :IDENTIFIER
-    EOL = :EOL
 
     REGEXP = {
-      SPACES: /\s*/,
-      COMMENT => %r{//.*},
       NUMBER => /\d+/,
-      STRING => /"(?:\\"|\\\\|\\n|[^"])*"/,
-      IDENTIFIER => /[a-zA-Z_]\w*|==|>=|<=|>|<|=|\(|\)|&&|\|\||[[:punct:]]/,
+      OPERATOR: %r{\+|-|/|\*},
+      SPACES: /\s*/,
     }.freeze
 
     def initialize(readable)
@@ -22,63 +17,35 @@ module Ishi
       @queue = []
     end
 
-    # @return [Array<(Symbol, String)>, Array<(false, nil)>]
-    # @raise [ParseError]
     def next_token
-      readline if @queue.empty? && !@readable.eof?
-      @queue.shift || [false, nil]
+      readline if @queue.empty?
+      @queue.shift
     end
 
     private
 
-    # @raise [ParseError]
     def readline
       line = @readable.readline
+      line_number = @readable.lineno
       scanner = StringScanner.new(line)
 
       until scanner.eos?
         scanner.scan(REGEXP[:SPACES])
 
-        if (comment = scanner.scan(REGEXP[COMMENT]))
-          nil
+        if (operator = scanner.scan(REGEXP[:OPERATOR]))
+          @queue << [operator, Token.create_operator(line_number, operator)]
         elsif (number = scanner.scan(REGEXP[NUMBER]))
-          @queue.push([NUMBER, number.to_i])
-        elsif (string = scanner.scan(REGEXP[STRING]))
-          @queue.push([STRING, to_string_literal(string)])
-        elsif (identifier = scanner.scan(REGEXP[IDENTIFIER]))
-          @queue.push([IDENTIFIER, identifier])
+          @queue << [NUMBER, Token.create_number(line_number, number)]
         elsif !scanner.eos?
-          line_number = @readable.lineno
           fail ParseError, "bad token at line #{line_number}"
         end
       end
 
-      @queue.push([EOL, "\\n"]) if line.end_with?("\n")
-    end
-
-    # @param string [String]
-    # @return [String]
-    def to_string_literal(string)
-      string_buffer = []
-      length = string.size
-      after_backslash = false
-      string[1...-1].each_char.with_index do |char, i|
-        if after_backslash
-          if char == "\\" || char == '"'
-            string_buffer.push(char)
-          elsif char == "n"
-            string_buffer.push("\n")
-          else
-            string_buffer.push("\\#{char}")
-          end
-          after_backslash = false
-        elsif char == "\\" && i <= length
-          after_backslash = true
-        else
-          string_buffer.push(char)
-        end
+      if @readable.eof?
+        @queue << [false, nil]
+      else
+        fail ParseError, "bad token at line #{line_number}"
       end
-      string_buffer.join
     end
   end
 end
