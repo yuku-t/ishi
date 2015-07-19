@@ -16,9 +16,10 @@ Gem::Specification.new do |spec|
   spec.homepage    = "https://github.com/yuku-t/ishi"
 
   spec.add_development_dependency "bundler", "~> 1.7"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "yard", "~> 0.8"
   spec.add_development_dependency "guard", "~> 2.12"
   spec.add_development_dependency "guard-livereload", "~> 2.4"
   spec.add_development_dependency "guard-yard", "~> 2.1"
+  spec.add_development_dependency "racc", "~> 1.4.12"
+  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "yard", "~> 0.8"
 end
