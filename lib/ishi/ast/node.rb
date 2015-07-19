@@ -15,6 +15,10 @@ module Ishi
       def location
         fail NotImplementedError
       end
+
+      def eval(_env)
+        fail NotImplementedError
+      end
     end
   end
 end
