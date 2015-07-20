@@ -10,7 +10,10 @@ module Ishi
 
     RULES = [
       {
-        regexp: %r{\+|-|/|\*|[[:punct:]]|;|=}
+        regexp: %r{\+|-|/|\*|==|>=|<=|>|<|=|;|[[:punct:]]}
+      },
+      { # keywords
+        regexp: /true|false/
       },
       {
         regexp: /[a-zA-Z_]\w*/,

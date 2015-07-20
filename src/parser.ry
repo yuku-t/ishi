@@ -3,6 +3,7 @@ token NUMBER VARIABLE EOL
 prechigh
   left "*" "/"
   left "+" "-"
+  left ">" ">=" "<" "<=" "=="
   right "="
 preclow
 start stmt_list
@@ -14,16 +15,23 @@ rule
        | expr ";"        { result = val[0] }
        | expr            { result = val[0] }
 
-  expr : expr "*" expr     { result = Ishi::AST::MulOp.new([val[0], val[2]]) }
-       | expr "/" expr     { result = Ishi::AST::DivOp.new([val[0], val[2]]) }
-       | expr "+" expr     { result = Ishi::AST::AddOp.new([val[0], val[2]]) }
-       | expr "-" expr     { result = Ishi::AST::SubOp.new([val[0], val[2]]) }
+  expr : expr "*"  expr    { result = Ishi::AST::MulOp.new([val[0], val[2]]) }
+       | expr "/"  expr    { result = Ishi::AST::DivOp.new([val[0], val[2]]) }
+       | expr "+"  expr    { result = Ishi::AST::AddOp.new([val[0], val[2]]) }
+       | expr "-"  expr    { result = Ishi::AST::SubOp.new([val[0], val[2]]) }
+       | expr ">"  expr    { result = Ishi::AST::GtOp.new([val[0], val[2]]) }
+       | expr ">=" expr    { result = Ishi::AST::GetOp.new([val[0], val[2]]) }
+       | expr "<"  expr    { result = Ishi::AST::LtOp.new([val[0], val[2]]) }
+       | expr "<=" expr    { result = Ishi::AST::LetOp.new([val[0], val[2]]) }
+       | expr "==" expr    { result = Ishi::AST::EqOp.new([val[0], val[2]]) }
        | variable "=" expr { result = Ishi::AST::AssignExpr.new([val[0], val[2]]) }
        | factor
 
   factor : "(" expr ")" { result = val[1] }
          | number       { result = val[0] }
          | variable     { result = val[0] }
+         | "true"       { result = Ishi::AST::True.new(val[0]) }
+         | "false"      { result = Ishi::AST::False.new(val[0]) }
 
   variable : VARIABLE { result = Ishi::AST::Variable.new(val[0]) }
 

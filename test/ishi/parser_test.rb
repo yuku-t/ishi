@@ -22,4 +22,13 @@ class ParserTest < MiniTest::Test
     EOS
     )).to_s)
   end
+
+  def test_comparison
+    parser = Ishi::Parser.new
+
+    assert_equal("(== (> 10 1) true)", parser.parse(StringIO.new(<<-EOS
+      10 > 1 == true
+    EOS
+    )).to_s)
+  end
 end

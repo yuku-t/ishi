@@ -46,6 +46,30 @@ class LexerTest < MiniTest::Test
     assert_equal([false, nil], @lexer.next_token)
   end
 
+  def test_keywords
+    @lexer = Ishi::Lexer.new(StringIO.new("true false"))
+
+    assert_next_token("true")
+    assert_next_token("false")
+    assert_equal([false, nil], @lexer.next_token)
+  end
+
+  def test_operators
+    @lexer = Ishi::Lexer.new(StringIO.new("+ - * / = < > <= >= =="))
+
+    assert_next_token("+")
+    assert_next_token("-")
+    assert_next_token("*")
+    assert_next_token("/")
+    assert_next_token("=")
+    assert_next_token("<")
+    assert_next_token(">")
+    assert_next_token("<=")
+    assert_next_token(">=")
+    assert_next_token("==")
+    assert_equal([false, nil], @lexer.next_token)
+  end
+
   private
 
   def assert_next_token(value, symbol: nil)

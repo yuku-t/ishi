@@ -28,6 +28,7 @@ module Ishi
     end
 
     # @param node [AST::AssignExpr]
+    # @return assigned value
     def visit_assign_expr(node)
       @env.put(node.left.value, node.right.accept(self))
     end
@@ -49,6 +50,41 @@ module Ishi
         child.accept(self)
       end
       last_child.accept(self)
+    end
+
+    # @param node [AST::GtOp]
+    def visit_gt_op(node)
+      node.left.accept(self) > node.right.accept(self) ? Const::TRUE : Const::FALSE
+    end
+
+    # @param node [AST::GetOp]
+    def visit_get_op(node)
+      node.left.accept(self) >= node.right.accept(self) ? Const::TRUE : Const::FALSE
+    end
+
+    # @param node [AST::LtOp]
+    def visit_lt_op(node)
+      node.left.accept(self) < node.right.accept(self) ? Const::TRUE : Const::FALSE
+    end
+
+    # @param node [AST::LetOp]
+    def visit_let_op(node)
+      node.left.accept(self) <= node.right.accept(self) ? Const::TRUE : Const::FALSE
+    end
+
+    # @param node [AST::EqOp]
+    def visit_eq_op(node)
+      node.left.accept(self) == node.right.accept(self) ? Const::TRUE : Const::FALSE
+    end
+
+    # @param node [AST::True]
+    def visit_true(node)
+      node.value
+    end
+
+    # @param node [AST::False]
+    def visit_false(node)
+      node.value
     end
   end
 end
