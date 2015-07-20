@@ -5,13 +5,19 @@ require "ishi/token"
 module Ishi
   class Lexer
     NUMBER = :NUMBER
+    IDENTIFIER = :IDENTIFIER
 
-    REGEXP = {
-      NUMBER => /\d+/,
-      OPERATOR: %r{\+|-|/|\*},
-      PUNCT: /[[:punct:]]/,
-      SPACES: /\s*/,
-    }.freeze
+    RULES = [
+      {
+        regexp: %r{\+|-|/|\*|[[:punct:]]}
+      },
+      {
+        regexp: /\d+/,
+        symbol: NUMBER,
+      }
+    ].freeze
+
+    SPACES = /\s*/
 
     def initialize(readable)
       @readable = readable
@@ -31,16 +37,16 @@ module Ishi
       scanner = StringScanner.new(line)
 
       until scanner.eos?
-        scanner.scan(REGEXP[:SPACES])
+        scanner.scan(SPACES)
 
-        if (operator = scanner.scan(REGEXP[:OPERATOR]))
-          @queue << [operator, Token.create_operator(line_number, operator)]
-        elsif (punct = scanner.scan(REGEXP[:PUNCT]))
-          @queue << [punct, punct]
-        elsif (number = scanner.scan(REGEXP[NUMBER]))
-          @queue << [NUMBER, Token.create_number(line_number, number)]
-        elsif !scanner.eos?
-          fail ParseError, "bad token at line #{line_number}"
+        @queue << catch(:token) do
+          RULES.each do |rule|
+            if (string = scanner.scan(rule[:regexp]))
+              token_symbol = rule[:symbol] || string
+              throw :token, [token_symbol, Token.new(string, line_number, scanner.pos)]
+            end
+          end
+          fail ParseError, "bad token at line #{line_number}" unless scanner.eos?
         end
       end
 

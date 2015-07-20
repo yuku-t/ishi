@@ -5,7 +5,7 @@ module Ishi
     class Leaf
       include Node
 
-      # @param token [Ishi::Token::BaseToken]
+      # @param token [Ishi::Token]
       def initialize(token)
         @token = token
       end
