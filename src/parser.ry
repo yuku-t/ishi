@@ -12,7 +12,8 @@ rule
        | expr "-" expr { result = Ishi::AST::SubOp.new([val[0], val[2]]) }
        | factor
 
-  factor : NUMBER { result = Ishi::AST::NumberLiteral.new(val[0]) }
+  factor : "(" expr ")" { result = val[1] }
+         | NUMBER       { result = Ishi::AST::NumberLiteral.new(val[0]) }
 end
 
 ---- header

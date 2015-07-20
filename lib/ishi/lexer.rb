@@ -9,6 +9,7 @@ module Ishi
     REGEXP = {
       NUMBER => /\d+/,
       OPERATOR: %r{\+|-|/|\*},
+      PUNCT: /[[:punct:]]/,
       SPACES: /\s*/,
     }.freeze
 
@@ -34,6 +35,8 @@ module Ishi
 
         if (operator = scanner.scan(REGEXP[:OPERATOR]))
           @queue << [operator, Token.create_operator(line_number, operator)]
+        elsif (punct = scanner.scan(REGEXP[:PUNCT]))
+          @queue << [punct, punct]
         elsif (number = scanner.scan(REGEXP[NUMBER]))
           @queue << [NUMBER, Token.create_number(line_number, number)]
         elsif !scanner.eos?

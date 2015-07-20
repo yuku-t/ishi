@@ -12,7 +12,7 @@ require "ishi/lexer"
 module Ishi
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.ry/module_eval...', 'parser.ry', 23)
+module_eval(<<'...end parser.ry/module_eval...', 'parser.ry', 24)
 def parse(readable)
   @lexer = Lexer.new(readable)
   do_parse
@@ -27,26 +27,28 @@ end
 ##### State transition tables begin ###
 
 racc_action_table = [
-     4,     5,     6,     5,     6,     7,     8,     5,     6,     3,
-     3,     3,     3,     9,     3 ]
+     5,     6,     7,     6,     7,     8,     9,     6,     7,     8,
+     9,     4,    16,     4,     4,     4,     3,     4,     3,     3,
+     3,     4,     3,     6,     7,    11,     3 ]
 
 racc_action_check = [
-     1,    13,    13,     1,     1,     1,     1,    12,    12,     6,
-     5,     7,     8,     4,     0 ]
+     1,    15,    15,     1,     1,     1,     1,    10,    10,    10,
+    10,     3,    10,     0,     6,     9,     3,     8,     0,     6,
+     9,     7,     8,    14,    14,     5,     7 ]
 
 racc_action_pointer = [
-    12,     0,   nil,   nil,    13,     8,     7,     9,    10,   nil,
-   nil,   nil,     4,    -2 ]
+    11,     0,   nil,     9,   nil,    25,    12,    19,    15,    13,
+     4,   nil,   nil,   nil,    20,    -2,   nil ]
 
 racc_action_default = [
-    -7,    -7,    -5,    -6,    -7,    -7,    -7,    -7,    -7,    14,
-    -1,    -2,    -3,    -4 ]
+    -8,    -8,    -5,    -8,    -7,    -8,    -8,    -8,    -8,    -8,
+    -8,    17,    -1,    -2,    -3,    -4,    -6 ]
 
 racc_goto_table = [
-     1,   nil,   nil,   nil,   nil,    10,    11,    12,    13 ]
+     1,   nil,   nil,    10,   nil,   nil,    12,    13,    14,    15 ]
 
 racc_goto_check = [
-     1,   nil,   nil,   nil,   nil,     1,     1,     1,     1 ]
+     1,   nil,   nil,     1,   nil,   nil,     1,     1,     1,     1 ]
 
 racc_goto_pointer = [
    nil,     0,   nil ]
@@ -56,16 +58,17 @@ racc_goto_default = [
 
 racc_reduce_table = [
   0, 0, :racc_error,
-  3, 8, :_reduce_1,
-  3, 8, :_reduce_2,
-  3, 8, :_reduce_3,
-  3, 8, :_reduce_4,
-  1, 8, :_reduce_none,
-  1, 9, :_reduce_6 ]
+  3, 10, :_reduce_1,
+  3, 10, :_reduce_2,
+  3, 10, :_reduce_3,
+  3, 10, :_reduce_4,
+  1, 10, :_reduce_none,
+  3, 11, :_reduce_6,
+  1, 11, :_reduce_7 ]
 
-racc_reduce_n = 7
+racc_reduce_n = 8
 
-racc_shift_n = 14
+racc_shift_n = 17
 
 racc_token_table = {
   false => 0,
@@ -74,9 +77,11 @@ racc_token_table = {
   "*" => 3,
   "/" => 4,
   "+" => 5,
-  "-" => 6 }
+  "-" => 6,
+  "(" => 7,
+  ")" => 8 }
 
-racc_nt_base = 7
+racc_nt_base = 9
 
 racc_use_result_var = true
 
@@ -104,6 +109,8 @@ Racc_token_to_s_table = [
   "\"/\"",
   "\"+\"",
   "\"-\"",
+  "\"(\"",
+  "\")\"",
   "$start",
   "expr",
   "factor" ]
@@ -146,6 +153,13 @@ module_eval(<<'.,.,', 'parser.ry', 11)
 
 module_eval(<<'.,.,', 'parser.ry', 14)
   def _reduce_6(val, _values, result)
+     result = val[1] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.ry', 15)
+  def _reduce_7(val, _values, result)
      result = Ishi::AST::NumberLiteral.new(val[0]) 
     result
   end
