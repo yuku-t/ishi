@@ -12,6 +12,10 @@ module Ishi
       def right
         @children[1]
       end
+
+      def to_s
+        "(#{operator} #{left} #{right})"
+      end
     end
   end
 end

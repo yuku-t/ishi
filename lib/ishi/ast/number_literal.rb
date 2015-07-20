@@ -10,6 +10,10 @@ module Ishi
       def eval(_env)
         value
       end
+
+      def to_s
+        @token.value
+      end
     end
   end
 end

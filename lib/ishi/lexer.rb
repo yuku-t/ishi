@@ -5,16 +5,16 @@ require "ishi/token"
 module Ishi
   class Lexer
     NUMBER = :NUMBER
-    IDENTIFIER = :IDENTIFIER
+    EOL = :EOL
 
     RULES = [
       {
-        regexp: %r{\+|-|/|\*|[[:punct:]]}
+        regexp: %r{\+|-|/|\*|[[:punct:]]|;}
       },
       {
         regexp: /\d+/,
         symbol: NUMBER,
-      }
+      },
     ].freeze
 
     SPACES = /\s*/
@@ -25,8 +25,8 @@ module Ishi
     end
 
     def next_token
-      readline if @queue.empty?
-      @queue.shift
+      readline if @queue.empty? && !@readable.eof?
+      @queue.shift || [false, nil]
     end
 
     private
@@ -36,8 +36,9 @@ module Ishi
       line_number = @readable.lineno
       scanner = StringScanner.new(line)
 
-      until scanner.eos?
+      while true
         scanner.scan(SPACES)
+        break if scanner.eos?
 
         @queue << catch(:token) do
           RULES.each do |rule|
@@ -46,15 +47,11 @@ module Ishi
               throw :token, [token_symbol, Token.new(string, line_number, scanner.pos)]
             end
           end
-          fail ParseError, "bad token at line #{line_number}" unless scanner.eos?
+          fail ParseError, "bad token at line #{line_number}"
         end
       end
 
-      if @readable.eof?
-        @queue << [false, nil]
-      else
-        fail ParseError, "bad token at line #{line_number}"
-      end
+      @queue << [EOL, Token.new("\\n", line_number, scanner.pos)] if line.end_with?("\n")
     end
   end
 end

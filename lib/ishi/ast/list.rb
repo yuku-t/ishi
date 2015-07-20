@@ -5,9 +5,12 @@ module Ishi
     class List
       include Node
 
-      # @param list [Array<Node>]
-      def initialize(list)
-        @children = list
+      # @param children [Array<Node>]
+      def initialize(children)
+        @children = children
+        @children.each do |child|
+          child.parent = self
+        end
       end
 
       def location

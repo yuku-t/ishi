@@ -7,11 +7,8 @@ module Ishi
 
       # @param token [Ishi::Token]
       def initialize(token)
+        @children = []
         @token = token
-      end
-
-      def children
-        []
       end
 
       def location

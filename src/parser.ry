@@ -1,11 +1,18 @@
 class Ishi::Parser
-token NUMBER
+token NUMBER EOL
 prechigh
   left "*" "/"
   left "+" "-"
 preclow
-start expr
+start stmt_list
 rule
+  stmt_list : stmt stmt_list { result = [val[0]] + Array(val[1]) }
+            | stmt
+
+  stmt : expr EOL { result = val[0] }
+       | expr ";" { result = val[0] }
+       | expr
+
   expr : expr "*" expr { result = Ishi::AST::MulOp.new([val[0], val[2]]) }
        | expr "/" expr { result = Ishi::AST::DivOp.new([val[0], val[2]]) }
        | expr "+" expr { result = Ishi::AST::AddOp.new([val[0], val[2]]) }
@@ -23,7 +30,7 @@ require "ishi/lexer"
 ---- inner
 def parse(readable)
   @lexer = Lexer.new(readable)
-  do_parse
+  AST::StmtList.new(Array(do_parse))
 end
 
 def next_token

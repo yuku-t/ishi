@@ -1,14 +1,15 @@
 module Ishi
   module AST
     module Node
-      # @return [Array<Node>]
-      def children
-        fail NotImplementedError
-      end
+      # @return [List, nil]
+      attr_reader :parent
 
-      # @return [Fixnum]
-      def num_children
-        children.size
+      # @return [Array<Node>]
+      attr_reader :children
+
+      # @return [String]
+      def to_s
+        fail NotImplementedError
       end
 
       # @return [String]
@@ -16,8 +17,15 @@ module Ishi
         fail NotImplementedError
       end
 
-      def eval(_env)
-        fail NotImplementedError
+      protected
+
+      def parent=(parent)
+        @parent = parent
+      end
+
+      # @return [Fixnum]
+      def height
+        @parent ? @parent.height + 1 : 0
       end
     end
   end
