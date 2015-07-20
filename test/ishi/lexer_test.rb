@@ -4,12 +4,8 @@ require "stringio"
 require "ishi/token"
 
 class LexerTest < MiniTest::Test
-  def test_next_token
-    @lexer = Ishi::Lexer.new(StringIO.new(<<-EOS
-      2 * (10 - 5)
-      8 / 5
-    EOS
-    ))
+  def test_calculation
+    @lexer = Ishi::Lexer.new(StringIO.new("2 * (10 - 5)"))
 
     assert_next_token("2", symbol: Ishi::Lexer::NUMBER)
     assert_next_token("*")
@@ -18,11 +14,35 @@ class LexerTest < MiniTest::Test
     assert_next_token("-")
     assert_next_token("5", symbol: Ishi::Lexer::NUMBER)
     assert_next_token(")")
+
+    assert_equal([false, nil], @lexer.next_token)
+  end
+
+  def test_assign_expr
+    @lexer = Ishi::Lexer.new(StringIO.new(<<-EOS
+      x = 9
+      y = x * 2
+      y - 1
+    EOS
+    ))
+
+    assert_next_token("x", symbol: Ishi::Lexer::VARIABLE)
+    assert_next_token("=")
+    assert_next_token("9", symbol: Ishi::Lexer::NUMBER)
     assert_next_token("\\n", symbol: Ishi::Lexer::EOL)
-    assert_next_token("8", symbol: Ishi::Lexer::NUMBER)
-    assert_next_token("/")
-    assert_next_token("5", symbol: Ishi::Lexer::NUMBER)
+
+    assert_next_token("y", symbol: Ishi::Lexer::VARIABLE)
+    assert_next_token("=")
+    assert_next_token("x", symbol: Ishi::Lexer::VARIABLE)
+    assert_next_token("*")
+    assert_next_token("2", symbol: Ishi::Lexer::NUMBER)
     assert_next_token("\\n", symbol: Ishi::Lexer::EOL)
+
+    assert_next_token("y", symbol: Ishi::Lexer::VARIABLE)
+    assert_next_token("-")
+    assert_next_token("1", symbol: Ishi::Lexer::NUMBER)
+    assert_next_token("\\n", symbol: Ishi::Lexer::EOL)
+
     assert_equal([false, nil], @lexer.next_token)
   end
 

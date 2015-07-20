@@ -12,7 +12,7 @@ require "ishi/lexer"
 module Ishi
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.ry/module_eval...', 'parser.ry', 31)
+module_eval(<<'...end parser.ry/module_eval...', 'parser.ry', 38)
 def parse(readable)
   @lexer = Lexer.new(readable)
   AST::StmtList.new(Array(do_parse))
@@ -27,72 +27,84 @@ end
 ##### State transition tables begin ###
 
 racc_action_table = [
-     6,     6,     6,     6,     6,     6,     6,     5,     5,     5,
-     5,     5,     5,     5,    11,    12,    13,    14,    11,    12,
-    21,     9,    11,    12,    13,    14,    10,    11,    12,     7,
-    16 ]
+     9,     8,     9,     8,     9,     8,     9,     8,    10,     6,
+    18,     6,    20,     6,   nil,     6,     9,     8,     9,     8,
+     9,     8,     9,     8,   nil,     6,   nil,     6,   nil,     6,
+   nil,     6,    14,    15,    16,    17,    14,    15,   nil,    26,
+    12,    14,    15,    16,    17,   nil,    13,    14,    15,    16,
+    17,    14,    15 ]
 
 racc_action_check = [
-     0,    14,     2,    13,     5,    12,    11,     0,    14,     2,
-    13,     5,    12,    11,    15,    15,    15,    15,    19,    19,
-    15,     3,     3,     3,     3,     3,     3,    20,    20,     1,
-     7 ]
+     0,     0,    18,    18,     2,     2,    17,    17,     1,     0,
+     4,    18,    10,     2,   nil,    17,    16,    16,     6,     6,
+    14,    14,    15,    15,   nil,    16,   nil,     6,   nil,    14,
+   nil,    15,    19,    19,    19,    19,    23,    23,   nil,    19,
+     3,     3,     3,     3,     3,   nil,     3,    25,    25,    25,
+    25,    24,    24 ]
 
 racc_action_pointer = [
-    -2,    29,     0,    18,   nil,     2,   nil,    30,   nil,   nil,
-   nil,     4,     3,     1,    -1,    10,   nil,   nil,   nil,    14,
-    23,   nil ]
+    -2,     8,     2,    36,     1,   nil,    16,   nil,   nil,   nil,
+    12,   nil,   nil,   nil,    18,    20,    14,     4,     0,    27,
+   nil,   nil,   nil,    31,    46,    42,   nil ]
 
 racc_action_default = [
-   -13,   -13,    -2,    -5,   -10,   -13,   -12,   -13,    -1,    -3,
-    -4,   -13,   -13,   -13,   -13,   -13,    22,    -6,    -7,    -8,
-    -9,   -11 ]
+   -17,   -17,    -2,    -5,   -14,   -11,   -17,   -13,   -15,   -16,
+   -17,    -1,    -3,    -4,   -17,   -17,   -17,   -17,   -17,   -17,
+    27,    -6,    -7,    -8,    -9,   -10,   -12 ]
 
 racc_goto_table = [
-    15,     1,   nil,     8,   nil,   nil,    17,    18,    19,    20 ]
+    19,     1,   nil,    11,   nil,   nil,   nil,   nil,    21,    22,
+    23,    24,    25 ]
 
 racc_goto_check = [
-     3,     1,   nil,     1,   nil,   nil,     3,     3,     3,     3 ]
+     3,     1,   nil,     1,   nil,   nil,   nil,   nil,     3,     3,
+     3,     3,     3 ]
 
 racc_goto_pointer = [
-   nil,     1,   nil,    -5,   nil ]
+   nil,     1,   nil,    -6,   nil,   nil,   nil ]
 
 racc_goto_default = [
-   nil,   nil,     2,     3,     4 ]
+   nil,   nil,     2,     3,     4,     5,     7 ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
-  2, 12, :_reduce_1,
-  1, 12, :_reduce_none,
-  2, 13, :_reduce_3,
-  2, 13, :_reduce_4,
-  1, 13, :_reduce_none,
-  3, 14, :_reduce_6,
-  3, 14, :_reduce_7,
-  3, 14, :_reduce_8,
-  3, 14, :_reduce_9,
+  2, 14, :_reduce_1,
   1, 14, :_reduce_none,
-  3, 15, :_reduce_11,
-  1, 15, :_reduce_12 ]
+  2, 15, :_reduce_3,
+  2, 15, :_reduce_4,
+  1, 15, :_reduce_5,
+  3, 16, :_reduce_6,
+  3, 16, :_reduce_7,
+  3, 16, :_reduce_8,
+  3, 16, :_reduce_9,
+  3, 16, :_reduce_10,
+  1, 16, :_reduce_none,
+  3, 18, :_reduce_12,
+  1, 18, :_reduce_13,
+  1, 18, :_reduce_14,
+  1, 17, :_reduce_15,
+  1, 19, :_reduce_16 ]
 
-racc_reduce_n = 13
+racc_reduce_n = 17
 
-racc_shift_n = 22
+racc_shift_n = 27
 
 racc_token_table = {
   false => 0,
   :error => 1,
   :NUMBER => 2,
-  :EOL => 3,
-  "*" => 4,
-  "/" => 5,
-  "+" => 6,
-  "-" => 7,
-  ";" => 8,
-  "(" => 9,
-  ")" => 10 }
+  :VARIABLE => 3,
+  :EOL => 4,
+  "*" => 5,
+  "/" => 6,
+  "+" => 7,
+  "-" => 8,
+  "=" => 9,
+  ";" => 10,
+  "(" => 11,
+  ")" => 12 }
 
-racc_nt_base = 11
+racc_nt_base = 13
 
 racc_use_result_var = true
 
@@ -116,11 +128,13 @@ Racc_token_to_s_table = [
   "$end",
   "error",
   "NUMBER",
+  "VARIABLE",
   "EOL",
   "\"*\"",
   "\"/\"",
   "\"+\"",
   "\"-\"",
+  "\"=\"",
   "\";\"",
   "\"(\"",
   "\")\"",
@@ -128,7 +142,9 @@ Racc_token_to_s_table = [
   "stmt_list",
   "stmt",
   "expr",
-  "factor" ]
+  "variable",
+  "factor",
+  "number" ]
 
 Racc_debug_parser = false
 
@@ -136,7 +152,7 @@ Racc_debug_parser = false
 
 # reduce 0 omitted
 
-module_eval(<<'.,.,', 'parser.ry', 8)
+module_eval(<<'.,.,', 'parser.ry', 9)
   def _reduce_1(val, _values, result)
      result = [val[0]] + Array(val[1]) 
     result
@@ -145,61 +161,94 @@ module_eval(<<'.,.,', 'parser.ry', 8)
 
 # reduce 2 omitted
 
-module_eval(<<'.,.,', 'parser.ry', 11)
+module_eval(<<'.,.,', 'parser.ry', 12)
   def _reduce_3(val, _values, result)
      result = val[0] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.ry', 12)
+module_eval(<<'.,.,', 'parser.ry', 13)
   def _reduce_4(val, _values, result)
      result = val[0] 
     result
   end
 .,.,
 
-# reduce 5 omitted
+module_eval(<<'.,.,', 'parser.ry', 14)
+  def _reduce_5(val, _values, result)
+     result = val[0] 
+    result
+  end
+.,.,
 
-module_eval(<<'.,.,', 'parser.ry', 15)
+module_eval(<<'.,.,', 'parser.ry', 16)
   def _reduce_6(val, _values, result)
      result = Ishi::AST::MulOp.new([val[0], val[2]]) 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.ry', 16)
+module_eval(<<'.,.,', 'parser.ry', 17)
   def _reduce_7(val, _values, result)
      result = Ishi::AST::DivOp.new([val[0], val[2]]) 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.ry', 17)
+module_eval(<<'.,.,', 'parser.ry', 18)
   def _reduce_8(val, _values, result)
      result = Ishi::AST::AddOp.new([val[0], val[2]]) 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.ry', 18)
+module_eval(<<'.,.,', 'parser.ry', 19)
   def _reduce_9(val, _values, result)
      result = Ishi::AST::SubOp.new([val[0], val[2]]) 
     result
   end
 .,.,
 
-# reduce 10 omitted
+module_eval(<<'.,.,', 'parser.ry', 20)
+  def _reduce_10(val, _values, result)
+     result = Ishi::AST::AssignExpr.new([val[0], val[2]]) 
+    result
+  end
+.,.,
 
-module_eval(<<'.,.,', 'parser.ry', 21)
-  def _reduce_11(val, _values, result)
+# reduce 11 omitted
+
+module_eval(<<'.,.,', 'parser.ry', 23)
+  def _reduce_12(val, _values, result)
      result = val[1] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.ry', 22)
-  def _reduce_12(val, _values, result)
+module_eval(<<'.,.,', 'parser.ry', 24)
+  def _reduce_13(val, _values, result)
+     result = val[0] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.ry', 25)
+  def _reduce_14(val, _values, result)
+     result = val[0] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.ry', 27)
+  def _reduce_15(val, _values, result)
+     result = Ishi::AST::Variable.new(val[0]) 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'parser.ry', 29)
+  def _reduce_16(val, _values, result)
      result = Ishi::AST::NumberLiteral.new(val[0]) 
     result
   end

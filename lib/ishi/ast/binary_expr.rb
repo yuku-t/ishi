@@ -3,6 +3,10 @@ require "ishi/ast/list"
 module Ishi
   module AST
     class BinaryExpr < List
+      def initialize(_children)
+        super
+      end
+
       # @return [Node]
       def left
         @children[0]

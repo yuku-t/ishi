@@ -5,11 +5,16 @@ require "ishi/token"
 module Ishi
   class Lexer
     NUMBER = :NUMBER
+    VARIABLE = :VARIABLE
     EOL = :EOL
 
     RULES = [
       {
-        regexp: %r{\+|-|/|\*|[[:punct:]]|;}
+        regexp: %r{\+|-|/|\*|[[:punct:]]|;|=}
+      },
+      {
+        regexp: /[a-zA-Z_]\w*/,
+        symbol: VARIABLE,
       },
       {
         regexp: /\d+/,

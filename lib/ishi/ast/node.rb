@@ -17,6 +17,11 @@ module Ishi
         fail NotImplementedError
       end
 
+      # @param visitor [Visitor]
+      def accept(visitor)
+        visitor.visit(self)
+      end
+
       protected
 
       def parent=(parent)

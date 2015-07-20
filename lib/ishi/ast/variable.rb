@@ -2,13 +2,13 @@ require "ishi/ast/leaf"
 
 module Ishi
   module AST
-    class NumberLiteral < Leaf
+    class Variable < Leaf
       def value
-        @token.value.to_i
+        @token.value
       end
 
       def to_s
-        @token.value
+        value
       end
     end
   end

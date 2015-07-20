@@ -1,11 +1,12 @@
-require "ishi/ast/add_op"
-require "ishi/ast/div_op"
-require "ishi/ast/mul_op"
-require "ishi/ast/number_literal"
-require "ishi/ast/sub_op"
-require "ishi/ast/stmt_list"
-
 module Ishi
   module AST
+    autoload :AddOp,         "ishi/ast/add_op"
+    autoload :AssignExpr,    "ishi/ast/assign_expr"
+    autoload :DivOp,         "ishi/ast/div_op"
+    autoload :MulOp,         "ishi/ast/mul_op"
+    autoload :NumberLiteral, "ishi/ast/number_literal"
+    autoload :StmtList,      "ishi/ast/stmt_list"
+    autoload :SubOp,         "ishi/ast/sub_op"
+    autoload :Variable,      "ishi/ast/variable"
   end
 end
